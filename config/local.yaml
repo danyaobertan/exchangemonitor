@@ -13,6 +13,6 @@ DB:
   MigrationSource: "file://migrations"
 SMTP:
   Host: sandbox.smtp.mailtrap.io
-  Port: 25
-  Username: name
-  Password: pass
+  Port: 465
+  Username: username # Use real username
+  Password: password # Use real password

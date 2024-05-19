@@ -13,9 +13,10 @@ import (
 )
 
 func main() {
+	// Load the configuration
 	conf := config.InitConfig()
 	fmt.Printf("Configuration for %v loaded successfully\n", conf.App.Name)
-
+	// Create a logger
 	log := logger.InitLogger(conf.App.Debug)
 	log.Info("Logger created successfully")
 
@@ -32,7 +33,7 @@ func main() {
 
 	shutDownChannel := make(chan struct{})
 	waitGroup := &sync.WaitGroup{}
-
+	// Start the application
 	go api.Run(*postgresClient, conf, log, shutDownChannel, waitGroup)
 
 	<-quitChannel
