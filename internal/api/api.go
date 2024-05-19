@@ -5,6 +5,7 @@ import (
 	"github.com/danyaobertan/exchangemonitor/internal/config"
 	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
+	"github.com/danyaobertan/exchangemonitor/internal/subscriber"
 	"net/http"
 	"strconv"
 	"sync"
@@ -20,9 +21,12 @@ const (
 )
 
 func Run(dbClient p.Postgres, conf *config.Configuration, log logger.Logger, shutDownChannel chan struct{}, wg *sync.WaitGroup) {
-	wg.Add(1)
-	defer wg.Done()
+	wg.Add(2) // Adding two because we now have two goroutines: HTTP server and email worker
 
+	// Start the email worker
+	go subscriber.StartEmailWorker(dbClient, conf, log, wg, shutDownChannel)
+
+	// Configure and start the HTTP server
 	srv := &http.Server{
 		Addr:         ":" + strconv.Itoa(conf.App.Port),
 		WriteTimeout: WriteTimeout * time.Second,

@@ -11,3 +11,8 @@ DB:
   DefaultHealthCheckTimeout: 5
   MigrationQueryParams : "?sslmode=disable&x-migrations-table=migrations_history"
   MigrationSource: "file://migrations"
+SMTP:
+  Host: sandbox.smtp.mailtrap.io
+  Port: 25
+  Username: name
+  Password: pass

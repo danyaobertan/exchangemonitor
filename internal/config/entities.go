@@ -1,8 +1,9 @@
 package config
 
 type Configuration struct {
-	App AppConfiguration
-	DB  DBConfiguration
+	App  AppConfiguration
+	DB   DBConfiguration
+	SMTP SMTPConfig
 }
 
 type AppConfiguration struct {
@@ -20,4 +21,11 @@ type DBConfiguration struct {
 	DefaultHealthCheckTimeout    int
 	MigrationSource              string
 	MigrationQueryParams         string
+}
+
+type SMTPConfig struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
 }

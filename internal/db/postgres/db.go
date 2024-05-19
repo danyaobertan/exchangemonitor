@@ -30,3 +30,26 @@ func (p Postgres) GetSubscription(ctx context.Context, subscriber models.Subscri
 
 	return sub, nil
 }
+
+func (p Postgres) GetAllSubscriptions(ctx context.Context) ([]models.Subscriber, error) {
+	ctx, cancelFunc := context.WithTimeout(ctx, ConnectionTimeout)
+	defer cancelFunc()
+
+	rows, err := p.connectionPool.Query(ctx, "SELECT email FROM subscribers")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var subs []models.Subscriber
+	for rows.Next() {
+		var sub models.Subscriber
+		if err := rows.Scan(&sub.Email); err != nil {
+			return nil, err
+		}
+		subs = append(subs, sub)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return subs, nil
+}
