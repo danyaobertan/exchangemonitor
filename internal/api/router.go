@@ -4,7 +4,7 @@ import (
 	h "github.com/danyaobertan/exchangemonitor/internal/api/handler"
 	m "github.com/danyaobertan/exchangemonitor/internal/api/middleware"
 	"github.com/danyaobertan/exchangemonitor/internal/config"
-	p "github.com/danyaobertan/exchangemonitor/internal/db"
+	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
 	"github.com/go-chi/chi/v5"
 )

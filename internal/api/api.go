@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"github.com/danyaobertan/exchangemonitor/internal/config"
-	p "github.com/danyaobertan/exchangemonitor/internal/db"
+	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
 	"net/http"
 	"strconv"

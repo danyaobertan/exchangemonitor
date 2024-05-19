@@ -1,22 +1,67 @@
 package handler
 
 import (
-	"github.com/danyaobertan/exchangemonitor/internal/subscriber"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/danyaobertan/exchangemonitor/models"
+	"github.com/danyaobertan/exchangemonitor/pkg/utils"
+	"go.uber.org/zap"
 	"net/http"
 )
 
+type SubscribeUserRequestBody struct {
+	Email string `json:"email"`
+}
+
+func (s SubscribeUserRequestBody) Validate() error {
+	if s.Email == "" && !utils.ValidEmail(s.Email) {
+		return errors.New("email is required")
+	}
+
+	return nil
+}
+
+type SubscribeResponseBody struct {
+	Message string `json:"message"`
+}
+
+// HandleSubscribe handles subscription requests
 func (h *Handler) HandleSubscribe(writer http.ResponseWriter, request *http.Request) {
-	email := request.FormValue("email")
-	if email == "" {
-		http.Error(writer, "Email is required", http.StatusBadRequest)
+	ctx := request.Context()
+
+	var requestBody SubscribeUserRequestBody
+	if err := utils.DecodeJSONRequest(request, &requestBody); err != nil {
+		h.log.Error("Failed to decode request body", zap.Error(err))
+		http.Error(writer, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	err := subscriber.SubscribeEmail(email)
-	if err != nil {
+	if err := requestBody.Validate(); err != nil {
+		h.log.Error("Invalid request body", zap.Error(err))
+		http.Error(writer, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	subscriber, err := h.dbClient.GetSubscription(ctx, models.Subscriber{Email: requestBody.Email})
+	if err == nil && subscriber.Email == requestBody.Email {
+		h.log.Info("Email already subscribed", zap.String("email", subscriber.Email))
+		http.Error(writer, fmt.Sprintf("Email %s already subscribed", subscriber.Email), http.StatusConflict)
+		return
+	}
+
+	if err = h.dbClient.AddSubscription(ctx, models.Subscriber{Email: requestBody.Email}); err != nil {
+		h.log.Error("Failed to subscribe email", zap.Error(err))
 		http.Error(writer, "Failed to subscribe email", http.StatusInternalServerError)
 		return
 	}
 
-	_, _ = writer.Write([]byte("Email subscribed successfully"))
+	resp, err := json.Marshal(SubscribeResponseBody{Message: fmt.Sprintf("Email %s subscribed", requestBody.Email)})
+	if err != nil {
+		h.log.Error("Unable to marshal response: %v", zap.Error(err))
+		http.Error(writer, "Unable to marshal response", http.StatusInternalServerError)
+		return
+	}
+
+	utils.WriteJSONResponse(writer, h.log, http.StatusOK, resp)
 }

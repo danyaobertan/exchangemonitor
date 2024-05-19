@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	p "github.com/danyaobertan/exchangemonitor/internal/db"
+	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
 )
 

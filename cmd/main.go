@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/danyaobertan/exchangemonitor/internal/api"
 	"github.com/danyaobertan/exchangemonitor/internal/config"
-	"github.com/danyaobertan/exchangemonitor/internal/db"
+	"github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
 	"os"
 	"os/signal"
@@ -20,12 +20,12 @@ func main() {
 	log.Info("Logger created successfully")
 
 	// Create a connection pool to the database
-	connectionPool := db.InitDB(log, conf.DB)
+	connectionPool := postgres.InitDB(log, conf.DB)
 	defer connectionPool.Close()
-	postgresClient := db.NewPostgres(connectionPool, log)
+	postgresClient := postgres.NewPostgres(connectionPool, log)
 
 	// Apply migrations
-	db.RunMigrations(log, conf.DB)
+	postgres.RunMigrations(log, conf.DB)
 
 	quitChannel := make(chan os.Signal)
 	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
