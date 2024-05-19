@@ -1,0 +1,13 @@
+App:
+  Port: 8080
+  Name: Exchange Monitor
+  Debug: true
+DB:
+  ConnectionURL: "postgres://user:password@localhost:5432/exchangemonitor"
+  DefaultMaxConnections: 10
+  DefaultMaxConnectionLifetime: 3600
+  DefaultMaxConnectionIdleTime: 600
+  DefaultHealthCheckPeriod: 60
+  DefaultHealthCheckTimeout: 5
+  MigrationQueryParams : "?sslmode=disable&x-migrations-table=migrations_history"
+  MigrationSource: "file://migrations"
