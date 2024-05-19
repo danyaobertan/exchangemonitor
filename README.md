@@ -5,10 +5,18 @@ Exchange Monitor is a robust web application designed to monitor the exchange ra
 The application is built using Go, PostgreSQL, and Docker. Mailtrap is used to send emails to subscribers.
 
 ## Features
-- Monitor exchange rate of USD to UAH
+- Monitor exchange rate of USD to UAH using NBU API
 - Alert subscribers daily about the exchange rate on their email (new subscribers will also be notified each day, if the application is running)
-- Graceful shutdown
-- Beautiful and responsive email template
+
+__Bonuses:__
+- Well __structured__ code
+- __Dockerized__ application
+- __Configurable__ via config file
+- __Graceful shutdown__ of the application
+- __Makefile__ for easy operations
+- __Unit tests__ of important functions
+- __Linting and formatting__ of the code
+- Beautiful and responsive __email template__ 
 
 ## Requirements
 - Docker
@@ -25,11 +33,32 @@ git clone https://github.com/danyaobertan/exchangemonitor.git
 cd exchangemonitor
 ```
 
+__IMPORTANT:__ Please update local.yaml with real smtp `name` and `password` if you want to test email sending functionality.
+
+
 ## Makefile
 Take advantage of the Makefile to streamline operations:
 
 ```bash
 make help
+```
+
+```bash
+Usage:
+  make install              - Install all dependencies.
+  make run                  - Run the application.
+  make build                - Build the executable binary.
+  make test                 - Run tests.
+  make lint                 - Run linter.
+  make clean                - Clean the binary.
+  make docker-build         - Build the Docker image.
+  make docker-run           - Run the Docker container.
+  make docker-stop          - Stop and remove the Docker container.
+  make docker-clean         - Remove Docker image.
+  make docker-compose-up    - Run Docker Compose.
+  make docker-compose-down  - Stop Docker Compose.
+  make docker-compose-clean - Remove Docker Compose.
+  make help                 - Show this help message.
 ```
 
 ## Setup
@@ -44,6 +73,9 @@ Setup only database with docker-compose
 ```bash
 docker-compose -f docker-compose-db-only.yaml up -d
 ```
+
+## APIs could be conveniently tested using requests.http file
+- Open the requests.http file in the root directory
 
 ## Test
 ```bash
