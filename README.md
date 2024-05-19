@@ -51,15 +51,15 @@ go test ./... -v
 ```
 
 ## Database
-Actually, only one table is used by the application. The table is called `subscribers` it contains subscribers email addresses.
+- Actually, only one table is used by the application. The table is called `subscribers` it contains subscribers email addresses.
 - As the future development, the table `rates` could be used to store the historical data of the exchange rate.
 - Also `email_notifications` table could be used to store the information about all the notification events.
 ![Database](./docs/img.png)
 
 ## HTML Email Template
-Phone view
+### Phone view
 ![Phone view](./docs/img_1.png)
-Tablet view
+### Tablet view
 ![Tablet view](./docs/img_2.png)
-Desktop view
+### Desktop view
 ![Desktop view](./docs/img_3.png)
