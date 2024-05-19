@@ -13,7 +13,6 @@ type Handler struct {
 	log      logger.Logger
 	dbClient *postgres.Postgres
 	middleware.Middleware
-	//	subsvriber *subscriber.Subscriber
 }
 
 func NewHandler(conf *config.Configuration, log logger.Logger, dbClient *postgres.Postgres) *Handler {

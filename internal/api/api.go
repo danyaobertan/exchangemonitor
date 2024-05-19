@@ -2,10 +2,10 @@ package api
 
 import (
 	"context"
+	"github.com/danyaobertan/exchangemonitor/internal/alerter"
 	"github.com/danyaobertan/exchangemonitor/internal/config"
 	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
-	"github.com/danyaobertan/exchangemonitor/internal/subscriber"
 	"net/http"
 	"strconv"
 	"sync"
@@ -24,7 +24,7 @@ func Run(dbClient p.Postgres, conf *config.Configuration, log logger.Logger, shu
 	wg.Add(2) // Adding two because we now have two goroutines: HTTP server and email worker
 
 	// Start the email worker
-	go subscriber.StartEmailWorker(dbClient, conf, log, wg, shutDownChannel)
+	go alerter.StartEmailWorker(dbClient, conf, log, wg, shutDownChannel)
 
 	// Configure and start the HTTP server
 	srv := &http.Server{
