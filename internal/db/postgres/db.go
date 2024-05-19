@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/danyaobertan/exchangemonitor/models"
 	"time"
+
+	"github.com/danyaobertan/exchangemonitor/models"
 )
 
 const ConnectionTimeout = 5 * time.Second
@@ -16,6 +17,7 @@ func (p Postgres) AddSubscription(ctx context.Context, subscriber models.Subscri
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -39,17 +41,23 @@ func (p Postgres) GetAllSubscriptions(ctx context.Context) ([]models.Subscriber,
 	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
+
 	var subs []models.Subscriber
+
 	for rows.Next() {
 		var sub models.Subscriber
 		if err := rows.Scan(&sub.Email); err != nil {
 			return nil, err
 		}
+
 		subs = append(subs, sub)
 	}
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
 	return subs, nil
 }

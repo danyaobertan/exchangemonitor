@@ -2,14 +2,15 @@ package api
 
 import (
 	"context"
-	"github.com/danyaobertan/exchangemonitor/internal/alerter"
-	"github.com/danyaobertan/exchangemonitor/internal/config"
-	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
-	"github.com/danyaobertan/exchangemonitor/internal/logger"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/danyaobertan/exchangemonitor/internal/alerter"
+	"github.com/danyaobertan/exchangemonitor/internal/config"
+	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
+	"github.com/danyaobertan/exchangemonitor/internal/logger"
 )
 
 const (
@@ -51,9 +52,11 @@ func Run(dbClient p.Postgres, conf *config.Configuration, log logger.Logger, shu
 
 	ctx, cancel := context.WithTimeout(context.Background(), GracefulShutdownTimeout*time.Second)
 	defer cancel()
+
 	err := srv.Shutdown(ctx)
 	if err != nil {
 		log.Error("Error shutting down server: %s" + err.Error())
 	}
+
 	log.Info("Graceful shutdown complete")
 }

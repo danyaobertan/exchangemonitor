@@ -2,8 +2,10 @@ package alerter
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/danyaobertan/exchangemonitor/internal/config"
 	p "github.com/danyaobertan/exchangemonitor/internal/db/postgres"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
@@ -11,8 +13,6 @@ import (
 	"github.com/danyaobertan/exchangemonitor/pkg/currency"
 	"github.com/danyaobertan/exchangemonitor/pkg/email"
 	"go.uber.org/zap"
-	"sync"
-	"time"
 )
 
 const AlertPeriod = 24 * time.Hour
@@ -22,15 +22,18 @@ func StartEmailWorker(dbClient p.Postgres, config *config.Configuration, log log
 
 	sendEmails := func() {
 		subs, err := GetSubscribers(dbClient)
+
 		if err != nil {
 			log.Error("Failed to get subscribers: ", zap.Error(err))
 			return
 		}
+
 		rate, err := GetExchangeRate()
 		if err != nil {
 			log.Error("Failed to get exchange rate: ", zap.Error(err))
 			return
 		}
+
 		for _, sub := range subs {
 			emailData := models.EmailDataObject{
 				Name:    sub.Email,
@@ -67,17 +70,20 @@ func StartEmailWorker(dbClient p.Postgres, config *config.Configuration, log log
 
 func GetSubscribers(dbClient p.Postgres) ([]models.Subscriber, error) {
 	ctx := context.Background()
+
 	subs, err := dbClient.GetAllSubscriptions(ctx)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Failed to get subscribers: %s", err))
+		return nil, fmt.Errorf("failed to get subscribers: %s", err)
 	}
+
 	return subs, nil
 }
 
 func GetExchangeRate() (float64, error) {
 	rate, err := currency.FetchCurrentRateNBU()
 	if err != nil {
-		return 0, errors.New(fmt.Sprintf("Failed to fetch rate: %s", err))
+		return 0, fmt.Errorf("failed to fetch rate: %s", err)
 	}
+
 	return rate, nil
 }

@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 func InitConfig() *Configuration {
@@ -13,6 +14,7 @@ func InitConfig() *Configuration {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Failed to read config file: %s", err)
 	}
+
 	Config := &Configuration{}
 
 	if err := viper.Unmarshal(Config); err != nil {

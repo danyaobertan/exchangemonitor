@@ -17,5 +17,6 @@ func getRouter(dbClient p.Postgres, conf *config.Configuration, log logger.Logge
 
 	router.Use(middleware.Logger)
 	handler.SetupRoutes(router)
+
 	return router
 }

@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/danyaobertan/exchangemonitor/pkg/currency"
 	"github.com/danyaobertan/exchangemonitor/pkg/utils"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type RateResponseBody struct {
@@ -17,9 +18,10 @@ func (h *Handler) HandleGetRate(writer http.ResponseWriter, _ *http.Request) {
 	rate, err := currency.FetchCurrentRateNBU()
 	if err != nil {
 		// На мою думку, 500 коректніше повертати, ніж 400 для цього випадку, попрои умову в завданні,
-		//адже це помилка на сервері та користувач ніяк не може вплинути на її виправлення.
+		// адже це помилка на сервері та користувач ніяк не може вплинути на її виправлення.
 		h.log.Error("Unable to fetch rate: %v", zap.Error(err))
 		http.Error(writer, "Unable to fetch rate", http.StatusInternalServerError)
+
 		return
 	}
 
@@ -27,6 +29,7 @@ func (h *Handler) HandleGetRate(writer http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		h.log.Error("Unable to marshal response: %v", zap.Error(err))
 		http.Error(writer, "Unable to marshal response", http.StatusInternalServerError)
+
 		return
 	}
 

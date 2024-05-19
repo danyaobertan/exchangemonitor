@@ -2,8 +2,8 @@ package logger
 
 import (
 	"fmt"
+
 	"go.uber.org/zap"
-	_ "go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -20,6 +20,7 @@ func InitLogger(debug bool) *zap.Logger {
 	if debug {
 		encoderConfig.Level.SetLevel(zap.DebugLevel)
 	}
+
 	encoderConfig.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
 
 	logger, err := encoderConfig.Build()
@@ -27,14 +28,9 @@ func InitLogger(debug bool) *zap.Logger {
 		panic(fmt.Sprintf("Error initializing logger: %s", err))
 	}
 
-	//defer func(logger *zap.Logger) {
-	//	err := logger.Sync()
-	//	if err != nil {
-	//		fmt.Printf("Error syncing logger: %s", err)
-	//	}
-	//}(logger)
 	_ = logger.Sync()
 
 	zap.ReplaceGlobals(logger)
+
 	return logger
 }

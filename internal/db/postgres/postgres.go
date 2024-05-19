@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/danyaobertan/exchangemonitor/internal/config"
 	"github.com/danyaobertan/exchangemonitor/internal/logger"
 	"github.com/golang-migrate/migrate/v4"
@@ -12,7 +14,6 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
-	"time"
 )
 
 type Postgres struct {
@@ -63,9 +64,11 @@ func RunMigrations(log logger.Logger, conf config.DBConfiguration) {
 		conf.MigrationSource,
 		conf.ConnectionURL+conf.MigrationQueryParams,
 	)
+
 	if err != nil {
 		log.Fatal("Error creating migration instance" + err.Error())
 	}
+
 	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Fatal("Error running migrations" + err.Error())
 	}
@@ -78,10 +81,13 @@ func InitDB(log logger.Logger, conf config.DBConfiguration) *pgxpool.Pool {
 	if err != nil {
 		log.Fatal("Error creating connection pool" + err.Error())
 	}
+
 	err = connPool.Ping(context.Background())
 	if err != nil {
 		log.Fatal("Error pinging database" + err.Error())
 	}
+
 	log.Info("Database connection established")
+
 	return connPool
 }

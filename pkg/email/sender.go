@@ -3,10 +3,11 @@ package email
 import (
 	"bytes"
 	"fmt"
-	"github.com/danyaobertan/exchangemonitor/internal/config"
-	"github.com/danyaobertan/exchangemonitor/models"
 	"html/template"
 	"net/smtp"
+
+	"github.com/danyaobertan/exchangemonitor/internal/config"
+	"github.com/danyaobertan/exchangemonitor/models"
 )
 
 // SendEmail sends an email using the specified SMTP configuration.
@@ -18,6 +19,7 @@ func SendEmail(smtpConfig config.SMTPConfig, recipient string, object models.Ema
 
 	// Execute the template with the data
 	var body bytes.Buffer
+
 	if err := tmpl.Execute(&body, object); err != nil {
 		return fmt.Errorf("error executing email template: %w", err)
 	}

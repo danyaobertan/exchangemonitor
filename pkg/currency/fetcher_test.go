@@ -20,6 +20,7 @@ func TestFindUSDRateFromRealExampleJSON(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
+
 	if rate != 39.427200 {
 		t.Errorf("Expected rate 39.427200, got %f", rate)
 	}
@@ -77,9 +78,11 @@ func TestFindUSDRate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			reader := strings.NewReader(tt.jsonData)
 			rate, err := FindUSDRateNBU(reader)
+
 			if (err != nil) != tt.expectErr {
 				t.Fatalf("Test %s expected error %v, got %v", tt.name, tt.expectErr, err)
 			}
+
 			if !tt.expectErr && rate != tt.expected {
 				t.Errorf("Test %s expected rate %f, got %f", tt.name, tt.expected, rate)
 			}

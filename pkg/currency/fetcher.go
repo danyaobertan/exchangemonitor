@@ -42,6 +42,7 @@ func FetchData(url string) (io.ReadCloser, error) {
 		log.Println("Error fetching data:", err)
 		return nil, err
 	}
+
 	return resp.Body, nil
 }
 
